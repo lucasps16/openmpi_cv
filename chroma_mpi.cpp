@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
 
         MPI_Barrier( MPI_COMM_WORLD );
         printf("SYNC 2\n");
-        MPI_Scatter( background.data, imagePartialSize, MPI_UNSIGNED_CHAR, partialBuffer, imagePartialSize, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD );
+        //MPI_Scatter( background.data, imagePartialSize, MPI_UNSIGNED_CHAR, partialBuffer, imagePartialSize, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD );
         printf("bg\n");
         //MPI_Scatter( hsv.data, imagePartialSize, MPI_UNSIGNED_CHAR, partialBuffer, imagePartialSize, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD );
         printf("hsv\n");
@@ -142,7 +142,7 @@ int main(int argc, char *argv[])
             if(print){
             printf("After mask, id: %d\n", id);
         }
-            /*//Si el pixel de la mascara es blanco asigne el valor del la imagen de fondo
+            //Si el pixel de la mascara es blanco asigne el valor del la imagen de fondo
             if (m == 255) 
             {
                 *B = *bgrow++;
@@ -161,7 +161,7 @@ int main(int argc, char *argv[])
             if(print){
                 printf("After pixels, id: %d\n", id);
                 print = false;
-            } */    
+            }   
         }
         mask_h++;
 

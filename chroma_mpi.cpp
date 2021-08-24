@@ -130,8 +130,6 @@ int main(int argc, char *argv[])
     for (int row = initIteration; row < endIteration; row+=3)
     {
         //Matrices de las imagenes
-        uchar *current = frame.ptr<uchar>(mask_h);
-        uchar *bgrow = background.ptr<uchar>(mask_h);
         uchar *maskrow = mask.ptr<uchar>(mask_h);
         uchar* B = &partialBuffer_result[row];
         uchar* G = &partialBuffer_result[row + 1];
@@ -140,6 +138,8 @@ int main(int argc, char *argv[])
             printf("After mats, id: %d\n", id);
             print = false;
         }
+
+            int temp_row = row;
         for (int col = 0; col < W; col++)
         {
             m = *maskrow++;
@@ -147,20 +147,20 @@ int main(int argc, char *argv[])
             printf("After mask, id: %d\n", id);
         }
             //Si el pixel de la mascara es blanco asigne el valor del la imagen de fondo
-            if (m == 0) 
+            if (m == 255) 
             {
-                partialBuffer_result[row] = partialBuffer_bg[row];
-                partialBuffer_result[row+1] = partialBuffer_bg[row+1];
-                partialBuffer_result[row+2] = partialBuffer_bg[row+2];
-                current += 3;
+                partialBuffer_result[temp_row] = partialBuffer_bg[temp_row];
+                partialBuffer_result[temp_row+1] = partialBuffer_bg[temp_row+1];
+                partialBuffer_result[temp_row+2] = partialBuffer_bg[temp_row+2];
+                temp_row += 3;
             }
             //Si el pixel de la mascara es negro asigne el valor del la imagen de frente
-            else if (m == 225) 
+            else if (m == 0) 
             {
-                partialBuffer_result[row] = partialBuffer_fg[row];
-                partialBuffer_result[row+1] = partialBuffer_fg[row+1];
-                partialBuffer_result[row+2] = partialBuffer_fg[row+2];
-                bgrow += 3;
+                partialBuffer_result[temp_row] = partialBuffer_fg[temp_row];
+                partialBuffer_result[temp_row+1] = partialBuffer_fg[temp_row+1];
+                partialBuffer_result[temp_row+2] = partialBuffer_fg[temp_row+2];
+                temp_row += 3;
             }  
             if(print){
                 printf("After pixels, id: %d\n", id);

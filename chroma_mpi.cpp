@@ -141,7 +141,6 @@ int main(int argc, char *argv[])
             print = false;
         }
 
-            int temp_row = row;
         for (int col = 0; col < W; col++)
         {
             m = *maskrow++;
@@ -151,16 +150,18 @@ int main(int argc, char *argv[])
             //Si el pixel de la mascara es blanco asigne el valor del la imagen de fondo
             if (m == 255) 
             {
-                partialBuffer_result[temp_row++] = *bgrow++;
-                partialBuffer_result[temp_row++] = *bgrow++;
-                partialBuffer_result[temp_row++] = *bgrow++;
+                partialBuffer_result[row] = *bgrow++;
+                partialBuffer_result[row+1] = *bgrow++;
+                partialBuffer_result[row+2] = *bgrow++;
+                current += 3;
             }
             //Si el pixel de la mascara es negro asigne el valor del la imagen de frente
             else if (m == 0) 
             {
-                partialBuffer_result[temp_row++] = *current++;
-                partialBuffer_result[temp_row++] = *current++;
-                partialBuffer_result[temp_row++] = *current++;
+                partialBuffer_result[row] = *current++;
+                partialBuffer_result[row+1] = *current++;
+                partialBuffer_result[row+2] = *current++;
+                bgrow += 3;
             }  
             if(print){
                 printf("After pixels, id: %d\n", id);

@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
         cvtColor(frame, hsv, COLOR_BGR2HSV);
         //Revisa si el pixel es verde y le convierte a blanco, si no es verde lo vuelve negro y se genera la mascara
         inRange(hsv, Scalar(35, 43, 46), Scalar(77, 255, 255), mask);
-        mask = mask;
+        imwrite("mask.jpg", mask);
 
     }
         

@@ -133,6 +133,7 @@ int main(int argc, char *argv[])
         uchar* R = &partialBuffer[row+2];
         if(print){
             printf("After mats, id: %d\n", id);
+            print = false;
         }
         for (int col = 0; col < W; col++)
         {
@@ -140,13 +141,13 @@ int main(int argc, char *argv[])
             if(print){
             printf("After mask, id: %d\n", id);
         }
-            //Si el pixel de la mascara es blanco asigne el valor del la imagen de fondo
+            /*//Si el pixel de la mascara es blanco asigne el valor del la imagen de fondo
             if (m == 255) 
             {
-               /* *B = *bgrow;
+                *B = *bgrow;
                 *R = *bgrow+1;
                 *G = *bgrow+2;
-                bgrow += 3;*/
+                bgrow += 3;
             }
             //Si el pixel de la mascara es negro asigne el valor del la imagen de frente
             else if (m == 0) 
@@ -159,7 +160,7 @@ int main(int argc, char *argv[])
             if(print){
                 printf("After pixels, id: %d\n", id);
                 print = false;
-            }          
+            }  */        
         }
         mask_h++;
 

@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
         printf("hsv\n");
         MPI_Scatter( mask.data, imagePartialSize/3, MPI_UNSIGNED_CHAR, maskBuffer, imagePartialSize/3, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD );
         if(id==0){
-            imwrite("mask.jpg", mask);
+            imwrite("mask2.jpg", mask);
             printf("mask\n");
         }
         

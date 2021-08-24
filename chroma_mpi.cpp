@@ -125,8 +125,8 @@ int main(int argc, char *argv[])
         uchar *bgrow = background.ptr<uchar>(mask_h);
         uchar *maskrow = mask.ptr<uchar>(mask_h);
         uchar* B = &partialBuffer[row];
-        uchar* R = &partialBuffer[row+1];
-        uchar* G = &partialBuffer[row+2];
+        uchar* G = &partialBuffer[row+1];
+        uchar* R = &partialBuffer[row+2];
         if(print){
             printf("After mats, id: %d\n", id);
         }

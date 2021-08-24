@@ -125,8 +125,8 @@ int main(int argc, char *argv[])
         uchar *bgrow = background.ptr<uchar>(mask_h);
         uchar *maskrow = mask.ptr<uchar>(mask_h);
         uchar* B = &partialBuffer[row];
-        uchar* G = &partialBuffer[row+1];
-        uchar* R = &partialBuffer[row+2];
+        uchar* R = &partialBuffer[row+1];
+        uchar* G = &partialBuffer[row+2];
         if(print){
             printf("After mats, id: %d\n", id);
         }
@@ -167,6 +167,7 @@ int main(int argc, char *argv[])
         printf("Despues de chroma sync\n");
 
     MPI_Gather(partialBuffer,imagePartialSize,MPI_UNSIGNED_CHAR,result.data, imagePartialSize, MPI_UNSIGNED_CHAR,0, MPI_COMM_WORLD);
+    MPI_Barrier( MPI_COMM_WORLD );
     if(id == 0){
         printf("W to file \n");
         imwrite(output, result);

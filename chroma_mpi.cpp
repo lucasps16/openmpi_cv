@@ -34,7 +34,9 @@ int main(int argc, char *argv[])
 
     int imageTotalSize;
     int imagePartialSize;
-    uchar* partialBuffer;
+    uchar* partialBuffer_fg;
+    uchar* partialBuffer_bg;
+    uchar* partialBuffer_result;
     uchar* maskBuffer;
     char buf[64];
     int threadId, i, *retval, h, w;
@@ -78,10 +80,12 @@ int main(int argc, char *argv[])
         printf("ThreadId: %d\n",id);
         MPI_Bcast( &imagePartialSize, 1, MPI_UNSIGNED_LONG_LONG, 0, MPI_COMM_WORLD );
         MPI_Barrier( MPI_COMM_WORLD );
-        partialBuffer = new uchar[imagePartialSize];
+        partialBuffer_fg = new uchar[imagePartialSize];
+        partialBuffer_bg = new uchar[imagePartialSize];
+        partialBuffer_result = new uchar[imagePartialSize];
         maskBuffer = new uchar[imagePartialSize/3];
 
-        MPI_Scatter( frame.data, imagePartialSize, MPI_UNSIGNED_CHAR, partialBuffer, imagePartialSize, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD );
+        MPI_Scatter( frame.data, imagePartialSize, MPI_UNSIGNED_CHAR, partialBuffer_fg, imagePartialSize, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD );
         MPI_Barrier( MPI_COMM_WORLD );
         h = frame.rows;
         w = frame.cols;
@@ -95,7 +99,7 @@ int main(int argc, char *argv[])
 
         MPI_Barrier( MPI_COMM_WORLD );
         printf("SYNC 2\n");
-        //MPI_Scatter( background.data, imagePartialSize, MPI_UNSIGNED_CHAR, partialBuffer, imagePartialSize, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD );
+        MPI_Scatter( background.data, imagePartialSize, MPI_UNSIGNED_CHAR, partialBuffer_bg, imagePartialSize, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD );
         printf("bg\n");
         //MPI_Scatter( hsv.data, imagePartialSize, MPI_UNSIGNED_CHAR, partialBuffer, imagePartialSize, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD );
         printf("hsv\n");
@@ -129,9 +133,9 @@ int main(int argc, char *argv[])
         uchar *current = frame.ptr<uchar>(mask_h);
         uchar *bgrow = background.ptr<uchar>(mask_h);
         uchar *maskrow = mask.ptr<uchar>(mask_h);
-        uchar* B = &partialBuffer[row];
-        uchar* G = &partialBuffer[row+1];
-        uchar* R = &partialBuffer[row+2];
+        uchar* B = &partialBuffer_result[row];
+        uchar* G = &partialBuffer_result[row + 1];
+        uchar* R = &partialBuffer_result[row+2];
         if(print){
             printf("After mats, id: %d\n", id);
             print = false;
@@ -174,7 +178,7 @@ int main(int argc, char *argv[])
     MPI_Barrier( MPI_COMM_WORLD );
         printf("Despues de chroma sync\n");
 
-    MPI_Gather(partialBuffer,imagePartialSize,MPI_UNSIGNED_CHAR,result.data, imagePartialSize, MPI_UNSIGNED_CHAR,0, MPI_COMM_WORLD);
+    MPI_Gather(partialBuffer_result,imagePartialSize,MPI_UNSIGNED_CHAR,result.data, imagePartialSize, MPI_UNSIGNED_CHAR,0, MPI_COMM_WORLD);
     MPI_Barrier( MPI_COMM_WORLD );
     if(id == 0){
         printf("W to file \n");
@@ -197,7 +201,10 @@ int main(int argc, char *argv[])
 
     }
     
-    delete[]partialBuffer;
+    delete[]partialBuffer_fg;
+    delete[]partialBuffer_bg;
+    delete[]partialBuffer_result;
+    delete[]maskBuffer;
 
     MPI_Finalize();
     

@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
     for (int row = initIteration; row < endIteration; row+=3)
     {
         //Matrices de las imagenes
-        uchar *current = hsv.ptr<uchar>(mask_h);
+        uchar *current = frame.ptr<uchar>(mask_h);
         uchar *bgrow = background.ptr<uchar>(mask_h);
         uchar *maskrow = mask.ptr<uchar>(mask_h);
         uchar* B = &partialBuffer[row];

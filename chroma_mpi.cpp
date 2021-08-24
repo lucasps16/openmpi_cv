@@ -151,6 +151,7 @@ int main(int argc, char *argv[])
                 partialBuffer_result[itr+1] = *bgrow++;
                 partialBuffer_result[itr+3] = *bgrow++;
                 partialBuffer_result[itr+2] = *bgrow++;
+                current += 3;
                 itr += 3;
             }
             //Si el pixel de la mascara es negro asigne el valor del la imagen de frente
@@ -160,6 +161,7 @@ int main(int argc, char *argv[])
                 partialBuffer_result[itr+3] = *current++;
                 partialBuffer_result[itr+2] = *current++;
                 itr += 3;
+                bgrow += 3;
             }  
             if(print){
                 printf("After pixels, id: %d\n", id);

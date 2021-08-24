@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
     for (int row = initIteration; row < endIteration; row+=3)
     {
         //Matrices de las imagenes
-        uchar *current = frame.ptr<uchar>(mask_h);
+        uchar *current = hsv.ptr<uchar>(mask_h);
         uchar *bgrow = background.ptr<uchar>(mask_h);
         uchar *maskrow = mask.ptr<uchar>(mask_h);
         uchar* B = &partialBuffer[row];
@@ -132,9 +132,6 @@ int main(int argc, char *argv[])
         }
         for (int col = 0; col < W; col++)
         {
-            if(print){
-            printf("IN second for, id: %d\n", id);
-        }
             m = *maskrow++;
             if(print){
             printf("After mask, id: %d\n", id);
@@ -145,7 +142,6 @@ int main(int argc, char *argv[])
                 *B = *bgrow++;
                 *G = *bgrow++;
                 *R = *bgrow++;
-                current += 3;
             }
             //Si el pixel de la mascara es negro asigne el valor del la imagen de frente
             else if (m == 0) 
@@ -153,7 +149,6 @@ int main(int argc, char *argv[])
                 *B = *current++;
                 *G = *current++;
                 *R = *current++;
-                bgrow += 3;
             }  
             if(print){
                 printf("After pixels, id: %d\n", id);

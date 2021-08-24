@@ -123,10 +123,10 @@ int main(int argc, char *argv[])
     printf("initIteration: %d\n", initIteration);
     int endIteration = initIteration + (H / THREADS);
     printf("endIteration: %d\n", endIteration);
+    MPI_Barrier( MPI_COMM_WORLD);
     int m;
     int itr = 0;
     bool print = true;
-    MPI_Barrier( MPI_COMM_WORLD);
     printf("BEFORE FOR id: %d\n", id);
     for (int row = initIteration; row < endIteration; row++)
     {
@@ -149,16 +149,16 @@ int main(int argc, char *argv[])
             if (m == 255) 
             {
                 partialBuffer_result[itr+1] = *bgrow++;
-                partialBuffer_result[itr+2] = *bgrow++;
                 partialBuffer_result[itr+3] = *bgrow++;
+                partialBuffer_result[itr+2] = *bgrow++;
                 itr += 3;
             }
             //Si el pixel de la mascara es negro asigne el valor del la imagen de frente
             else if (m == 0) 
             {
                 partialBuffer_result[itr+1] = *current++;
-                partialBuffer_result[itr+2] = *current++;
                 partialBuffer_result[itr+3] = *current++;
+                partialBuffer_result[itr+2] = *current++;
                 itr += 3;
             }  
             if(print){

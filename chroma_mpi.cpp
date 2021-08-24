@@ -49,6 +49,7 @@ int main(int argc, char *argv[])
     printf("--------1---------ThreadId: %d\n",id);
     
         //Abrir imagenes como BGR
+    if(id == 0){
         background = imread(bg, IMREAD_COLOR);
         frame = imread(fg, IMREAD_COLOR);
 
@@ -57,6 +58,9 @@ int main(int argc, char *argv[])
         //Revisa si el pixel es verde y le convierte a blanco, si no es verde lo vuelve negro y se genera la mascara
         inRange(hsv, Scalar(35, 43, 46), Scalar(77, 255, 255), mask);
         mask = mask;
+
+    }
+        
         imageTotalSize = frame.cols*frame.rows*3;
         printf("imageTotalSize %d\n", imageTotalSize);
         printf("numprocs: %d\n",numprocs);

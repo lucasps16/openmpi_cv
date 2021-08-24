@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
         printf("HALP \n");
     if(id == 0){
         //Crea una imagen vacia del tamano de la imagen original
-        result = Mat::zeros(frame.size(), frame.type());
+        result = Mat(frame.size(), frame.type());
         printf("result \n");
         //Creacion de hilos
         
@@ -100,10 +100,7 @@ int main(int argc, char *argv[])
         //MPI_Scatter( hsv.data, imagePartialSize, MPI_UNSIGNED_CHAR, partialBuffer, imagePartialSize, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD );
         printf("hsv\n");
         MPI_Scatter( mask.data, imagePartialSize/3, MPI_UNSIGNED_CHAR, maskBuffer, imagePartialSize/3, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD );
-        if(id==0){
-            imwrite("mask2.jpg", mask);
-            printf("mask\n");
-        }
+        
         
         
         MPI_Barrier( MPI_COMM_WORLD );
@@ -145,26 +142,26 @@ int main(int argc, char *argv[])
             if(print){
             printf("After mask, id: %d\n", id);
         }
-            /*//Si el pixel de la mascara es blanco asigne el valor del la imagen de fondo
+            //Si el pixel de la mascara es blanco asigne el valor del la imagen de fondo
             if (m == 255) 
             {
-                *B = *bgrow;
-                *R = *bgrow+1;
-                *G = *bgrow+2;
-                bgrow += 3;
+                *B = *bgrow++;
+                *R = *bgrow++;
+                *G = *bgrow++;
+                current += 3;
             }
             //Si el pixel de la mascara es negro asigne el valor del la imagen de frente
             else if (m == 0) 
             {
-                *B = *current;
-                *R = *current+1;
-                *G = *current+2;
-                current += 3;
+                *B = *current++;
+                *R = *current++;
+                *G = *current++;
+                bgrow += 3;
             }  
             if(print){
                 printf("After pixels, id: %d\n", id);
                 print = false;
-            }  */        
+            }     
         }
         mask_h++;
 

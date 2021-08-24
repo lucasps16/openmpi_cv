@@ -156,18 +156,18 @@ int main(int argc, char *argv[])
             //Si el pixel de la mascara es blanco asigne el valor del la imagen de fondo
             if (m == 255) 
             {
-                partialBuffer_result[itr+2] = *bgrow++;
-                partialBuffer_result[itr+1] = *bgrow++;
                 partialBuffer_result[itr+3] = *bgrow++;
+                partialBuffer_result[itr+1] = *bgrow++;
+                partialBuffer_result[itr+2] = *bgrow++;
                 current += 3;
                 itr += 3;
             }
             //Si el pixel de la mascara es negro asigne el valor del la imagen de frente
             else if (m == 0) 
             {
-                partialBuffer_result[itr+2] = *current++;
-                partialBuffer_result[itr+1] = *current++;
                 partialBuffer_result[itr+3] = *current++;
+                partialBuffer_result[itr+1] = *current++;
+                partialBuffer_result[itr+2] = *current++;
                 itr += 3;
                 bgrow += 3;
             }  

@@ -24,7 +24,6 @@ struct args{
 
 int main(int argc, char *argv[])
 {
-    printf("INICIO \n");
     //Argumentos esperados:
     string bg = argv[1];         //nombre imagen de fondo,
     string fg = argv[2];         //nombre imagen frontal
@@ -50,7 +49,7 @@ int main(int argc, char *argv[])
 
     struct timeval tval_before, tval_after, tval_result;
     gettimeofday(&tval_before, NULL);
-    printf("--------1---------ThreadId: %d\n",id);
+    //printf("--------1---------ThreadId: %d\n",id);
     
         //Abrir imagenes como BGR
         background = imread(bg, IMREAD_COLOR);
@@ -66,20 +65,20 @@ int main(int argc, char *argv[])
     
         
         imageTotalSize = frame.cols*frame.rows*3;
-        printf("imageTotalSize %d\n", imageTotalSize);
-        printf("numprocs: %d\n",numprocs);
+        //printf("imageTotalSize %d\n", imageTotalSize);
+        //printf("numprocs: %d\n",numprocs);
         imagePartialSize = imageTotalSize/numprocs;
-        printf("Despues \n");
-        printf("imagePartialSize %d\n", imagePartialSize);
-        printf("HALP \n");
+        //printf("Despues \n");
+        //printf("imagePartialSize %d\n", imagePartialSize);
+        //printf("HALP \n");
     if(id == 0){
         //Crea una imagen vacia del tamano de la imagen original
         result = Mat(frame.size(), frame.type());
-        printf("result \n");
+        //printf("result \n");
         //Creacion de hilos
         
     }
-        printf("ThreadId: %d\n",id);
+        //printf("ThreadId: %d\n",id);
         MPI_Bcast( &imagePartialSize, 1, MPI_UNSIGNED_LONG_LONG, 0, MPI_COMM_WORLD );
         MPI_Barrier( MPI_COMM_WORLD );
         partialBuffer_fg = new uchar[imagePartialSize];
@@ -92,50 +91,50 @@ int main(int argc, char *argv[])
         MPI_Barrier( MPI_COMM_WORLD );
         h = frame.rows;
         w = frame.cols;
-        printf("HW \n");      
+        //printf("HW \n");      
         
         
-        printf("CAST 1 \n");
-        printf("ThreadId: %d\n",id);
+        //printf("CAST 1 \n");
+        //printf("ThreadId: %d\n",id);
         MPI_Bcast( &h, 1, MPI_INT, 0, MPI_COMM_WORLD );
         MPI_Bcast( &w, 1, MPI_INT, 0, MPI_COMM_WORLD );
         MPI_Bcast( &threads, 1, MPI_INT, 0, MPI_COMM_WORLD );
 
 
         MPI_Barrier( MPI_COMM_WORLD );
-        printf("SYNC 2\n");
+        //printf("SYNC 2\n");
         MPI_Scatter( background.data, imagePartialSize, MPI_UNSIGNED_CHAR, partialBuffer_bg, imagePartialSize, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD );
-        printf("bg\n");
+        //printf("bg\n");
         MPI_Scatter( hsv.data, imagePartialSize, MPI_UNSIGNED_CHAR, partialBuffer_hsv, imagePartialSize, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD );
-        printf("hsv\n");
+        //printf("hsv\n");
         MPI_Scatter( mask.data, imagePartialSize/3, MPI_UNSIGNED_CHAR, maskBuffer, imagePartialSize/3, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD );
         
         
         
         MPI_Barrier( MPI_COMM_WORLD );
-        printf("SYNC 3\n");
+        //printf("SYNC 3\n");
         
         //Barrera 
             int THREADS = threads;
             int H = h;
             int W = w;
             int ID = id;
-            printf("Threads: %d id: %d\n",THREADS,id);
-            printf("H: %d id: %d\n",H,id);
-            printf("W: %d id: %d\n",W,id);
-            printf("ID: %d\n",id);
-            printf("Antes de chroma\n");
+            //printf("Threads: %d id: %d\n",THREADS,id);
+            //printf("H: %d id: %d\n",H,id);
+            //printf("W: %d id: %d\n",W,id);
+            //printf("ID: %d\n",id);
+            //printf("Antes de chroma\n");
     int mask_h = 0;
     //Calculo de la iteracion correspondiente al hilo
     int initIteration = (H / THREADS) * ID;
-    printf("initIteration: %d Id: %d\n", initIteration,id);
+    //printf("initIteration: %d Id: %d\n", initIteration,id);
     int endIteration = initIteration + (H / THREADS);
-    printf("endIteration: %d Id: %d\n", endIteration,id);    
+    //printf("endIteration: %d Id: %d\n", endIteration,id);    
     int m;
     MPI_Barrier( MPI_COMM_WORLD);
     int itr = 0;
     bool print = true;
-    printf("BEFORE FOR id: %d\n", id);
+    //printf("BEFORE FOR id: %d\n", id);
     for (int row = initIteration; row < endIteration; row++)
     {
         //Matrices de las imagenes
@@ -143,22 +142,22 @@ int main(int argc, char *argv[])
         uchar *bgrow = background.ptr<uchar>(row);
         uchar *maskrow = mask.ptr<uchar>(row);
         if(print){
-            printf("After mats, id: %d\n", id);
+            //printf("After mats, id: %d\n", id);
         }
         for (int col = 0; col < W; col++)
         {
             if(print){
-            printf("In for 2, id: %d\n", id);
+            //printf("In for 2, id: %d\n", id);
         }
             m = *maskrow++;
             if(print){
-            printf("After mask, id: %d\n", id);
+            //printf("After mask, id: %d\n", id);
         }
             //Si el pixel de la mascara es blanco asigne el valor del la imagen de fondo
             if (m == 255) 
             {
-                partialBuffer_result[itr+1] = *bgrow++;
                 partialBuffer_result[itr+2] = *bgrow++;
+                partialBuffer_result[itr+1] = *bgrow++;
                 partialBuffer_result[itr+3] = *bgrow++;
                 current += 3;
                 itr += 3;
@@ -166,32 +165,32 @@ int main(int argc, char *argv[])
             //Si el pixel de la mascara es negro asigne el valor del la imagen de frente
             else if (m == 0) 
             {
-                partialBuffer_result[itr+1] = *current++;
                 partialBuffer_result[itr+2] = *current++;
+                partialBuffer_result[itr+1] = *current++;
                 partialBuffer_result[itr+3] = *current++;
                 itr += 3;
                 bgrow += 3;
             }  
             if(print){
-                printf("After pixels, id: %d\n", id);
+                //printf("After pixels, id: %d\n", id);
                 print = false;
             }   
         }
         mask_h++;
 
-        //printf("ID: %d Itr: %d\n",id, row);
+        ////printf("ID: %d Itr: %d\n",id, row);
        
     }
-    printf("Finished %d\n", id);
+    //printf("Finished %d\n", id);
 
             
     MPI_Barrier( MPI_COMM_WORLD );
-        printf("Despues de chroma sync\n");
+        //printf("Despues de chroma sync\n");
     
     MPI_Gather(partialBuffer_result,imagePartialSize,MPI_UNSIGNED_CHAR,result.data, imagePartialSize, MPI_UNSIGNED_CHAR,0, MPI_COMM_WORLD);
     MPI_Barrier( MPI_COMM_WORLD );
     if(id == 0){
-        printf("W to file \n");
+        //printf("W to file \n");
         imwrite(output, result);
         //Calculo de tiempo de ejecucion
         gettimeofday(&tval_after, NULL);

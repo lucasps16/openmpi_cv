@@ -97,7 +97,7 @@ int main(int argc, char *argv[])
         printf("SYNC 2\n");
         MPI_Scatter( background.data, imagePartialSize, MPI_UNSIGNED_CHAR, partialBuffer, imagePartialSize, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD );
         printf("bg\n");
-        MPI_Scatter( hsv.data, imagePartialSize, MPI_UNSIGNED_CHAR, partialBuffer, imagePartialSize, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD );
+        //MPI_Scatter( hsv.data, imagePartialSize, MPI_UNSIGNED_CHAR, partialBuffer, imagePartialSize, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD );
         printf("hsv\n");
         MPI_Scatter( mask.data, imagePartialSize/3, MPI_UNSIGNED_CHAR, maskBuffer, imagePartialSize/3, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD );
         printf("mask\n");

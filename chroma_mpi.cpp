@@ -37,6 +37,7 @@ int main(int argc, char *argv[])
     uchar* partialBuffer_fg;
     uchar* partialBuffer_bg;
     uchar* partialBuffer_result;
+    uchar* partialBuffer_hsv;
     uchar* maskBuffer;
     char buf[64];
     int threadId, i, *retval, h, w;
@@ -45,23 +46,24 @@ int main(int argc, char *argv[])
     MPI_Comm_size(MPI_COMM_WORLD, &numprocs);
     MPI_Comm_rank(MPI_COMM_WORLD, &threadId);
     int id = threadId;
+    int procs = numprocs;
 
     struct timeval tval_before, tval_after, tval_result;
     gettimeofday(&tval_before, NULL);
     printf("--------1---------ThreadId: %d\n",id);
     
         //Abrir imagenes como BGR
-    if(id == 0){
         background = imread(bg, IMREAD_COLOR);
         frame = imread(fg, IMREAD_COLOR);
 
         //Transforma el espacio de color de la imagen de BGR a HSV y lo guarda en un objeto
         cvtColor(frame, hsv, COLOR_BGR2HSV);
         //Revisa si el pixel es verde y le convierte a blanco, si no es verde lo vuelve negro y se genera la mascara
+
         inRange(hsv, Scalar(35, 43, 46), Scalar(77, 255, 255), mask);
         
 
-    }
+    
         
         imageTotalSize = frame.cols*frame.rows*3;
         printf("imageTotalSize %d\n", imageTotalSize);
@@ -83,6 +85,7 @@ int main(int argc, char *argv[])
         partialBuffer_fg = new uchar[imagePartialSize];
         partialBuffer_bg = new uchar[imagePartialSize];
         partialBuffer_result = new uchar[imagePartialSize];
+        partialBuffer_hsv = new uchar[imagePartialSize];
         maskBuffer = new uchar[imagePartialSize/3];
 
         MPI_Scatter( frame.data, imagePartialSize, MPI_UNSIGNED_CHAR, partialBuffer_fg, imagePartialSize, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD );
@@ -94,6 +97,8 @@ int main(int argc, char *argv[])
         
         printf("CAST 1 \n");
         printf("ThreadId: %d\n",id);
+        MPI_Bcast( &h, 1, MPI_INT, 0, MPI_COMM_WORLD );
+        MPI_Bcast( &w, 1, MPI_INT, 0, MPI_COMM_WORLD );
         MPI_Bcast( &threads, 1, MPI_INT, 0, MPI_COMM_WORLD );
 
 
@@ -101,7 +106,7 @@ int main(int argc, char *argv[])
         printf("SYNC 2\n");
         MPI_Scatter( background.data, imagePartialSize, MPI_UNSIGNED_CHAR, partialBuffer_bg, imagePartialSize, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD );
         printf("bg\n");
-        //MPI_Scatter( hsv.data, imagePartialSize, MPI_UNSIGNED_CHAR, partialBuffer, imagePartialSize, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD );
+        MPI_Scatter( hsv.data, imagePartialSize, MPI_UNSIGNED_CHAR, partialBuffer_hsv, imagePartialSize, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD );
         printf("hsv\n");
         MPI_Scatter( mask.data, imagePartialSize/3, MPI_UNSIGNED_CHAR, maskBuffer, imagePartialSize/3, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD );
         
@@ -115,32 +120,36 @@ int main(int argc, char *argv[])
             int H = h;
             int W = w;
             int ID = id;
-            printf("ThreadId: %d\n",id);
+            printf("Threads: %d id: %d\n",THREADS,id);
+            printf("H: %d id: %d\n",H,id);
+            printf("W: %d id: %d\n",W,id);
+            printf("ID: %d\n",id);
             printf("Antes de chroma\n");
     int mask_h = 0;
     //Calculo de la iteracion correspondiente al hilo
     int initIteration = (H / THREADS) * ID;
-    printf("initIteration: %d\n", initIteration);
+    printf("initIteration: %d Id: %d\n", initIteration,id);
     int endIteration = initIteration + (H / THREADS);
-    printf("endIteration: %d\n", endIteration);
-    MPI_Barrier( MPI_COMM_WORLD);
+    printf("endIteration: %d Id: %d\n", endIteration,id);    
     int m;
+    MPI_Barrier( MPI_COMM_WORLD);
     int itr = 0;
     bool print = true;
     printf("BEFORE FOR id: %d\n", id);
     for (int row = initIteration; row < endIteration; row++)
     {
         //Matrices de las imagenes
-        uchar *current = frame.ptr<uchar>(mask_h);
-        uchar *bgrow = background.ptr<uchar>(mask_h);
-        uchar *maskrow = mask.ptr<uchar>(mask_h);
+        uchar *current = frame.ptr<uchar>(row);
+        uchar *bgrow = background.ptr<uchar>(row);
+        uchar *maskrow = mask.ptr<uchar>(row);
         if(print){
             printf("After mats, id: %d\n", id);
-            print = false;
         }
-        int temp_row = row;
         for (int col = 0; col < W; col++)
         {
+            if(print){
+            printf("In for 2, id: %d\n", id);
+        }
             m = *maskrow++;
             if(print){
             printf("After mask, id: %d\n", id);

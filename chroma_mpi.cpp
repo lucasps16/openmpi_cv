@@ -132,10 +132,10 @@ int main(int argc, char *argv[])
         //Matrices de las imagenes
         uchar *current = frame.ptr<uchar>(mask_h);
         uchar *bgrow = background.ptr<uchar>(mask_h);
-        uchar *maskrow = mask.ptr<uchar>(mask_h);
+        uchar *maskrow = mask.ptr<uchar>(mask_h);/*
         uchar* B = &partialBuffer_result[row];
         uchar* G = &partialBuffer_result[row + 1];
-        uchar* R = &partialBuffer_result[row + 2];
+        uchar* R = &partialBuffer_result[row + 2];*/
         if(print){
             printf("After mats, id: %d\n", id);
             print = false;
@@ -149,17 +149,17 @@ int main(int argc, char *argv[])
             //Si el pixel de la mascara es blanco asigne el valor del la imagen de fondo
             if (m == 255) 
             {
-                B = &partialBuffer_bg[row];
-                R = &partialBuffer_bg[row+1];
-                G = &partialBuffer_bg[row+2];
+                partialBuffer_result[row] = partialBuffer_bg[row];
+                partialBuffer_result[row+1] = partialBuffer_bg[row+1];
+                partialBuffer_result[row+2] = partialBuffer_bg[row+2];
                 current += 3;
             }
             //Si el pixel de la mascara es negro asigne el valor del la imagen de frente
             else if (m == 0) 
             {
-                B = &partialBuffer_fg[row];
-                R = &partialBuffer_fg[row+1];
-                G = &partialBuffer_fg[row+2];
+                partialBuffer_result[row] = partialBuffer_fg[row];
+                partialBuffer_result[row+1] = partialBuffer_fg[row+1];
+                partialBuffer_result[row+2] = partialBuffer_fg[row+2];
                 bgrow += 3;
             }  
             if(print){

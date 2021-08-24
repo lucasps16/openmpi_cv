@@ -140,15 +140,15 @@ int main(int argc, char *argv[])
             if (m == 255) 
             {
                 *B = *bgrow++;
-                *G = *bgrow++;
                 *R = *bgrow++;
+                *G = *bgrow++;
             }
             //Si el pixel de la mascara es negro asigne el valor del la imagen de frente
             else if (m == 0) 
             {
                 *B = *current++;
-                *G = *current++;
                 *R = *current++;
+                *G = *current++;
             }  
             if(print){
                 printf("After pixels, id: %d\n", id);

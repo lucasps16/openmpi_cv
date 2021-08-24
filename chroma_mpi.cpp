@@ -139,16 +139,18 @@ int main(int argc, char *argv[])
             //Si el pixel de la mascara es blanco asigne el valor del la imagen de fondo
             if (m == 255) 
             {
-                *B = *bgrow++;
-                *R = *bgrow++;
-                *G = *bgrow++;
+                *B = *bgrow;
+                *R = *bgrow+1;
+                *G = *bgrow+2;
+                bgrow += 3;
             }
             //Si el pixel de la mascara es negro asigne el valor del la imagen de frente
             else if (m == 0) 
             {
-                *B = *current++;
-                *R = *current++;
-                *G = *current++;
+                *B = *current;
+                *R = *current+1;
+                *G = *current+2;
+                current += 3;
             }  
             if(print){
                 printf("After pixels, id: %d\n", id);

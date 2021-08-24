@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
         cvtColor(frame, hsv, COLOR_BGR2HSV);
         //Revisa si el pixel es verde y le convierte a blanco, si no es verde lo vuelve negro y se genera la mascara
         inRange(hsv, Scalar(35, 43, 46), Scalar(77, 255, 255), mask);
-        imwrite("mask.jpg", mask);
+        
 
     }
         
@@ -100,7 +100,11 @@ int main(int argc, char *argv[])
         //MPI_Scatter( hsv.data, imagePartialSize, MPI_UNSIGNED_CHAR, partialBuffer, imagePartialSize, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD );
         printf("hsv\n");
         MPI_Scatter( mask.data, imagePartialSize/3, MPI_UNSIGNED_CHAR, maskBuffer, imagePartialSize/3, MPI_UNSIGNED_CHAR, 0, MPI_COMM_WORLD );
-        printf("mask\n");
+        if(id==0){
+            imwrite("mask.jpg", mask);
+            printf("mask\n");
+        }
+        
         
         MPI_Barrier( MPI_COMM_WORLD );
         printf("SYNC 3\n");
